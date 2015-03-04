@@ -19,7 +19,8 @@ func setup() {
 	server = httptest.NewServer(mux)
 
 	url, _ := url.Parse(server.URL)
-	client = NewClient(&http.Client{}, url.String()+"/radio/")
+	client = NewClient(&http.Client{})
+	client.Endpoint = url.String() + "/radio/"
 }
 
 func teardown() {

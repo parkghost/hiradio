@@ -311,10 +311,11 @@ func (c *Client) fetchRankingList() (*rankingList, error) {
 }
 
 // NewClient returns a new Client.
-func NewClient(client *http.Client, Endpoint string) *Client {
+func NewClient(client *http.Client) *Client {
 	c := new(Client)
 	c.client = client
-	c.Endpoint = Endpoint
+	c.Endpoint = defaultEndpoint
+	c.UserAgent = defaultUserAgent
 	return c
 }
 
