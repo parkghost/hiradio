@@ -45,7 +45,7 @@ func TestGetChannelInfo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected err: %s", err)
 	}
-	t.Logf("Number of program: %d", len(rl.List))
+	t.Logf("ChannelInfo: %+v", rl)
 }
 
 func TestListRankings(t *testing.T) {
