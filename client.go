@@ -321,7 +321,7 @@ func NewClient(client *http.Client) *Client {
 
 // DefaultClient is the default Client.
 //
-// Http request will be canceled if sent over the 1 minus.
+// Http request will be canceled if read/write time more than 1 minus.
 var DefaultClient = &Client{
 	client: &http.Client{
 		Timeout: 1 * time.Minute,
