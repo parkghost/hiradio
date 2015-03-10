@@ -69,8 +69,8 @@ $ hiradio info 222
 #### play [options] [ChannelID]
 ```text
 $ hiradio play -player /usr/bin/vlc 222
+Press ctrl-c to exit
 ```
-![Screenshot](http://i.imgur.com/YFsiv9l.png)
 
 ## License
 This project is licensed under the MIT license
