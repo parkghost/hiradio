@@ -12,8 +12,6 @@ import (
 
 	"github.com/parkghost/hiradio"
 	"github.com/parkghost/hiradio/cmd/internal/config"
-
-	log "github.com/Sirupsen/logrus"
 )
 
 const (
@@ -26,11 +24,11 @@ func playCmd(args []string) {
 	// load config from file
 	cfgPath, err := configPath("play.json")
 	if err != nil {
-		log.Warnf("Failed to load configuration: %s", err)
+		Warnf("Failed to load configuration: %s", err)
 	}
 	cfg, err := loadConfig(cfgPath)
 	if err != nil {
-		log.Warnf("Failed to load configuration: %s", err)
+		Warnf("Failed to load configuration: %s", err)
 	}
 
 	// flag settings
@@ -60,7 +58,7 @@ The options are:`)
 			fs.Usage()
 			return
 		}
-		log.Fatalf("Failed to parse ChannelID: %s", args)
+		Fatalf("Failed to parse ChannelID: %s", args)
 	}
 
 	// save current config
@@ -69,7 +67,7 @@ The options are:`)
 		cfg.Set(proxyPortKey, *port)
 		cfg.Set(channelIDKey, channelID)
 		if err := config.SaveTo(cfgPath, cfg); err != nil {
-			log.Warnf("Failed to save configuration: %s", err)
+			Warnf("Failed to save configuration: %s", err)
 		}
 	}
 
@@ -79,14 +77,15 @@ The options are:`)
 	}
 	go func() {
 		if err := proxyServer.Run(); err != nil {
-			log.Fatalf("Failed to start proxy: %s", err)
+			Fatalf("Failed to start proxy: %s", err)
 		}
 	}()
 
 	// run audio player
 	playlist := fmt.Sprintf("http://localhost:%d/stream/%d.m3u8", *port, channelID)
 	if *app == "" {
-		fmt.Printf("Open URL with player:\n%s\n", playlist)
+		fmt.Printf("Open URL with player: %s\n", playlist)
+		fmt.Print("Press ctrl-c to exit")
 		select {}
 	} else {
 		p := player{
@@ -94,8 +93,9 @@ The options are:`)
 			url:     playlist,
 			verbose: *verbose,
 		}
+		fmt.Print("Press ctrl-c to exit")
 		if err := p.Run(); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 	}
 }
@@ -122,11 +122,11 @@ type proxy struct {
 	address string
 }
 
-var routeRE = regexp.MustCompile(`/stream/(\d+).m3u8`)
-
 func (p *proxy) Run() error {
 	return http.ListenAndServe(p.address, p)
 }
+
+var routeRE = regexp.MustCompile(`/stream/(\d+).m3u8`)
 
 func (p *proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	matched := routeRE.FindStringSubmatch(req.RequestURI)
@@ -138,6 +138,7 @@ func (p *proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	pl, err := hiradio.GetPlaylist(channelID)
 	if err != nil {
+		Warnf("Failed to get playlist: %s", err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -157,6 +158,7 @@ func (p *player) Run() error {
 	if p.verbose {
 		p.cmd.Stdout = os.Stdout
 		p.cmd.Stderr = os.Stderr
+		fmt.Println()
 	}
 	if err := p.cmd.Run(); err != nil {
 		return err

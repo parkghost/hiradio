@@ -7,19 +7,17 @@ import (
 
 	"github.com/parkghost/hiradio"
 	"github.com/parkghost/hiradio/cmd/internal/config"
-
-	log "github.com/Sirupsen/logrus"
 )
 
 func infoCmd(args []string) {
 	// load config from file
 	cfgPath, err := configPath("info.json")
 	if err != nil {
-		log.Warnf("Failed to load configuration: %s", err)
+		Warnf("Failed to load configuration: %s", err)
 	}
 	cfg, err := loadConfig(cfgPath)
 	if err != nil {
-		log.Warnf("Failed to load configuration: %s", err)
+		Warnf("Failed to load configuration: %s", err)
 	}
 
 	// flag settings
@@ -43,13 +41,13 @@ Display radio information and program list`)
 			fs.Usage()
 			return
 		}
-		log.Fatalf("Failed to parse ChannelID: %s", args)
+		Fatalf("Failed to parse ChannelID: %s", args)
 	}
 
 	// fetch channel info
 	info, err := hiradio.GetChannelInfo(channelID)
 	if err != nil {
-		log.Fatal(err)
+		Fatal(err)
 	}
 
 	printChannelInfo(channelID, info)
@@ -58,7 +56,7 @@ Display radio information and program list`)
 	if cfgPath != "" {
 		cfg.Set(channelIDKey, channelID)
 		if err := config.SaveTo(cfgPath, cfg); err != nil {
-			log.Warnf("Failed to save configuration: %s", err)
+			Warnf("Failed to save configuration: %s", err)
 		}
 	}
 }

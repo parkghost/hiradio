@@ -4,7 +4,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -37,11 +36,9 @@ Use "hiradio command -h" for more information about a command.`)
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-
 }
 
 func main() {
-	log.SetFlags(0)
 	flag.Parse()
 	if flag.NArg() == 0 {
 		flag.Usage()

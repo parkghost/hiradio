@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strconv"
 
-	"github.com/moznion/go-unicode-east-asian-width"
 	"github.com/parkghost/hiradio"
+
+	"github.com/moznion/go-unicode-east-asian-width"
 )
 
 func listCmd(args []string) {
@@ -37,11 +37,11 @@ List channels information`)
 	// fetch channels
 	channels, err := hiradio.ListChannels()
 	if err != nil {
-		log.Fatal(err)
+		Fatal(err)
 	}
 	result := <-rankingsCh
 	if result.err != nil {
-		log.Fatal(result.err)
+		Fatal(result.err)
 	}
 
 	// mix channels and rankings
