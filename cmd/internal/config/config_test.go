@@ -96,13 +96,13 @@ func TestGetIntDefaultValue(t *testing.T) {
 	want := 1234
 	got := c.GetInt(testKey, want)
 	if got != want {
-		t.Fatalf("got %s, want %s", got, testValue)
+		t.Fatalf("got %d, want %d", got, testValue)
 	}
 
 	c.Set(testKey, "AAAAA")
 	got = c.GetInt(testKey, want)
 	if got != want {
-		t.Fatalf("got %s, want %s", got, testValue)
+		t.Fatalf("got %d, want %d", got, testValue)
 	}
 }
 
