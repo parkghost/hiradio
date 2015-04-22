@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"regexp"
 	"strconv"
 
@@ -82,22 +83,28 @@ The options are:`)
 	}()
 
 	// run audio player
+	quit := make(chan os.Signal)
 	playlist := fmt.Sprintf("http://localhost:%d/stream/%d.m3u8", *port, channelID)
 	if *app == "" {
 		fmt.Printf("Open URL with player: %s\n", playlist)
-		fmt.Print("Press ctrl-c to exit")
-		select {}
 	} else {
 		p := player{
 			app:     *app,
 			url:     playlist,
 			verbose: *verbose,
 		}
-		fmt.Print("Press ctrl-c to exit")
-		if err := p.Run(); err != nil {
-			Fatal(err)
-		}
+		go func() {
+			if err := p.Run(); err != nil {
+				Fatal(err)
+			}
+			close(quit)
+		}()
 	}
+
+	fmt.Print("Press ctrl-c to exit")
+	signal.Notify(quit, os.Kill, os.Interrupt)
+	<-quit
+	println()
 }
 
 var errNotFound = errors.New("key not found")
