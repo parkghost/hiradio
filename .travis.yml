@@ -10,8 +10,7 @@ before_install:
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
 script:
-  - go test -v -coverprofile=coverage.out
-  - goveralls -covermode=set -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN
+  - goveralls -repotoken $COVERALLS_TOKEN
 after_success:
   - gox -os "linux darwin windows" -build-toolchain 
   - gox -os "linux darwin windows" -output "dist/{{.OS}}_{{.Arch}}_{{.Dir}}" ./cmd/hiradio
