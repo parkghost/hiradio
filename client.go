@@ -85,20 +85,22 @@ func (c *Client) ListChannels() ([]Channel, error) {
 		return nil, err
 	}
 
-	// fetch rest of ChannelLists
-	pages := make([]int, 0, pageSize-1)
-	for i := 2; i <= pageSize; i++ {
-		pages = append(pages, i)
-	}
-	restOfPages, err := c.fetchChannelLists(pages)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, page := range restOfPages {
-		list, err = appendChannel(list, page.List)
+	if pageSize > 1 {
+		// fetch rest of ChannelLists
+		pages := make([]int, 0, pageSize-1)
+		for i := 2; i <= pageSize; i++ {
+			pages = append(pages, i)
+		}
+		restOfPages, err := c.fetchChannelLists(pages)
 		if err != nil {
 			return nil, err
+		}
+
+		for _, page := range restOfPages {
+			list, err = appendChannel(list, page.List)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 	return list, nil
