@@ -5,7 +5,6 @@ env:
   - "PATH=/home/travis/gopath/bin:$PATH"
 before_install:
   - go get github.com/mitchellh/gox
-  - gox -build-toolchain
   - go get github.com/tcnksm/ghr
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
@@ -14,5 +13,6 @@ script:
   - go test -v -integration -covermode=count -coverprofile=coverage.out ./...
   - goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN
 after_success:
+  - gox -os "linux darwin windows" -build-toolchain 
   - gox -os "linux darwin windows" -output "dist/{{.OS}}_{{.Arch}}_{{.Dir}}" ./cmd/hiradio
   - ghr --username parkghost --token $GITHUB_TOKEN --replace --prerelease --debug pre-release dist/

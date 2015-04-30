@@ -1,16 +1,13 @@
 package hiradio_test
 
 import (
-	"flag"
 	"testing"
 
 	"github.com/parkghost/hiradio"
 )
 
-var testIntegration = flag.Bool("integration", false, "Perform integration tests")
-
-func TestListChannels(t *testing.T) {
-	if !*testIntegration {
+func TestIntegrationListChannels(t *testing.T) {
+	if testing.Short() {
 		t.Skip("skipping intergration test")
 	}
 
@@ -24,8 +21,8 @@ func TestListChannels(t *testing.T) {
 	t.Logf("Number of channels: %d", len(cl))
 }
 
-func TestGetPlaylist(t *testing.T) {
-	if !*testIntegration {
+func TestIntegrationGetPlaylist(t *testing.T) {
+	if testing.Short() {
 		t.Skip("skipping intergration test")
 	}
 
@@ -36,8 +33,8 @@ func TestGetPlaylist(t *testing.T) {
 	t.Logf("Playlist: %+v", p)
 }
 
-func TestGetChannelInfo(t *testing.T) {
-	if !*testIntegration {
+func TestIntegrationGetChannelInfo(t *testing.T) {
+	if testing.Short() {
 		t.Skip("skipping intergration test")
 	}
 
@@ -48,8 +45,8 @@ func TestGetChannelInfo(t *testing.T) {
 	t.Logf("ChannelInfo: %+v", rl)
 }
 
-func TestListRankings(t *testing.T) {
-	if !*testIntegration {
+func TestIntegrationListRankings(t *testing.T) {
+	if testing.Short() {
 		t.Skip("skipping intergration test")
 	}
 
