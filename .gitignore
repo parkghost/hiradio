@@ -1,6 +1,6 @@
 .watchf.conf
 .watchf.pid
-.out
+*.out
 hiradio-diag
 dist
 TODO.md
