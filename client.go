@@ -123,15 +123,15 @@ type channel struct {
 
 func (c *Client) fetchChannelList(page int) (*channelList, error) {
 	url := fmt.Sprintf("%schannelList.do?pN=%d", c.Endpoint, page)
+	req, _ := http.NewRequest("GET", url, nil)
 	cl := new(channelList)
-	if err := c.fetchObject(url, cl); err != nil {
+	if err := c.fetchObject(req, cl); err != nil {
 		return nil, err
 	}
 	return cl, nil
 }
 
-func (c *Client) fetchObject(url string, v interface{}) error {
-	req, _ := http.NewRequest("GET", url, nil)
+func (c *Client) fetchObject(req *http.Request, v interface{}) error {
 	req.Header.Set("User-Agent", c.UserAgent)
 	res, err := c.client.Do(req)
 	if err != nil {
@@ -231,8 +231,11 @@ func (c *Client) GetPlaylist(channelID int) (*Playlist, error) {
 
 func (c *Client) fetchPlaylist(channelID int) (*Playlist, error) {
 	url := fmt.Sprintf("%splay.do?id=%d", c.Endpoint, channelID)
+	req, _ := http.NewRequest("GET", url, nil)
+	// bypass Referer checking
+	req.Header.Set("Referer", "http://hichannel.hinet.net/radio/index.do")
 	p := new(Playlist)
-	if err := c.fetchObject(url, p); err != nil {
+	if err := c.fetchObject(req, p); err != nil {
 		return nil, err
 	}
 
@@ -271,8 +274,9 @@ func (c *Client) GetChannelInfo(channelID int) (*ChannelInfo, error) {
 
 func (c *Client) fetchChannelInfo(channelID int) (*ChannelInfo, error) {
 	url := fmt.Sprintf("%sgetProgramList.do?channelId=%d", c.Endpoint, channelID)
+	req, _ := http.NewRequest("GET", url, nil)
 	ci := new(ChannelInfo)
-	if err := c.fetchObject(url, ci); err != nil {
+	if err := c.fetchObject(req, ci); err != nil {
 		return nil, err
 	}
 
@@ -304,9 +308,10 @@ func (c *Client) ListRankings() ([]Ranking, error) {
 }
 
 func (c *Client) fetchRankingList() (*rankingList, error) {
-	url := c.Endpoint + "getRanking.do"
+	url := fmt.Sprintf("%sgetRanking.do", c.Endpoint)
+	req, _ := http.NewRequest("GET", url, nil)
 	rl := new(rankingList)
-	if err := c.fetchObject(url, rl); err != nil {
+	if err := c.fetchObject(req, rl); err != nil {
 		return nil, err
 	}
 	return rl, nil
